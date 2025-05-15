@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Portal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#14A155", secondary: "#0066CC", accent: "#FF6B2B" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121826;
+      color: #e2e8f0;
+      }
+      .course-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      }
+      .custom-checkbox {
+      position: relative;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background-color: #1e293b;
+      border: 2px solid #334155;
+      cursor: pointer;
+      }
+      .custom-checkbox.checked {
+      background-color: #14A155;
+      border-color: #14A155;
+      }
+      .custom-checkbox.checked:after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      }
+      .custom-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      }
+      .custom-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      }
+      .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #1e293b;
+      transition: .4s;
+      border-radius: 34px;
+      }
+      .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+      background-color: #14A155;
+      }
+      input:checked + .switch-slider:before {
+      transform: translateX(20px);
+      }
+      .custom-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 5px;
+      background: #1e293b;
+      outline: none;
+      }
+      .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #14A155;
+      cursor: pointer;
+      }
+      .custom-range::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #14A155;
+      cursor: pointer;
+      border: none;
+      }
+      .custom-radio {
+      position: relative;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #1e293b;
+      border: 2px solid #334155;
+      cursor: pointer;
+      }
+      .custom-radio.checked {
+      border-color: #14A155;
+      }
+      .custom-radio.checked:after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #14A155;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      }
+      .attendance-day {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      }
+      .attendance-present {
+      background-color: rgba(20, 161, 85, 0.2);
+      color: #14A155;
+      }
+      .attendance-absent {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      }
+      .attendance-holiday {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      }
+      .attendance-pending {
+      background-color: rgba(100, 116, 139, 0.2);
+      color: #94a3b8;
+      }
+      .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      width: 200px;
+      background-color: #1e293b;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      z-index: 50;
+      overflow: hidden;
+      }
+      .dropdown-menu.active {
+      display: block;
+      }
+      .chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      }
+      .chatbot-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      background-color: #14A155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .chatbot-window {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 350px;
+      height: 450px;
+      background-color: #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: none;
+      overflow: hidden;
+      }
+      .chatbot-window.active {
+      display: block;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      <div class="w-64 bg-[#1a2236] border-r border-[#2a3349] hidden md:block">
+        <div class="p-4 flex items-center">
+          <span class="text-2xl font-['Pacifico'] text-white">Miracle</span>
+        </div>
+        <div class="mt-6">
+          <nav>
+            <a
+              href="/dashboard"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-dashboard-line"></i>
+              </div>
+              <span>Dashboard</span>
+            </a>
+            <a
+              href="/courses"
+              class="flex items-center px-4 py-3 text-white bg-[#14A155] bg-opacity-20 border-l-4 border-[#14A155]"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-book-open-line"></i>
+              </div>
+              <span>Courses</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-calendar-check-line"></i>
+              </div>
+              <span>Attendance</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-money-dollar-circle-line"></i>
+              </div>
+              <span>Fees</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-file-list-3-line"></i>
+              </div>
+              <span>Documents</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-notification-line"></i>
+              </div>
+              <span>Notifications</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-400 hover:bg-[#242f44] hover:text-white"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <i class="ri-settings-line"></i>
+              </div>
+              <span>Settings</span>
+            </a>
+          </nav>
+        </div>
+        <div class="absolute bottom-0 left-0 w-64 p-4">
+          <div class="flex items-center">
+            <div
+              class="w-10 h-10 rounded-full bg-[#14A155] flex items-center justify-center text-white font-semibold"
+            >
+              JS
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-white">James Smith</p>
+              <p class="text-xs text-gray-400">Student ID: ST20250515</p>
+            </div>
+            <div class="ml-auto">
+              <button class="text-gray-400 hover:text-white">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-logout-box-r-line"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Main Content -->
+      <div class="flex-1 overflow-y-auto bg-[#121826]">
+        <!-- Header -->
+        <header class="bg-[#1a2236] border-b border-[#2a3349] py-4 px-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center md:hidden">
+              <button class="text-gray-400 hover:text-white">
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-menu-line"></i>
+                </div>
+              </button>
+              <span class="ml-3 text-xl font-['Pacifico'] text-white"
+                >logo</span
+              >
+            </div>
+            <div class="hidden md:block">
+              <div class="relative">
+                <input
+                  type="text"
+                  placeholder="Search courses, documents..."
+                  class="w-80 bg-[#242f44] border-none text-gray-300 px-4 py-2 pl-10 rounded focus:outline-none focus:ring-2 focus:ring-[#14A155]"
+                />
+                <div
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                >
+                  <div class="w-4 h-4 flex items-center justify-center">
+                    <i class="ri-search-line"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="relative" id="notificationDropdown">
+                <button class="text-gray-400 hover:text-white relative">
+                  <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="ri-notification-3-line"></i>
+                  </div>
+                  <span
+                    class="absolute top-0 right-0 w-2 h-2 bg-[#FF6B2B] rounded-full"
+                  ></span>
+                </button>
+                <div class="dropdown-menu" id="notificationMenu">
+                  <div class="p-3 border-b border-[#2a3349]">
+                    <h3 class="font-medium">Notifications</h3>
+                  </div>
+                  <div class="p-2">
+                    <div class="p-2 hover:bg-[#242f44] rounded cursor-pointer">
+                      <p class="text-sm font-medium">New assignment posted</p>
+                      <p class="text-xs text-gray-400">15 minutes ago</p>
+                    </div>
+                    <div class="p-2 hover:bg-[#242f44] rounded cursor-pointer">
+                      <p class="text-sm font-medium">Fee payment reminder</p>
+                      <p class="text-xs text-gray-400">2 hours ago</p>
+                    </div>
+                    <div class="p-2 hover:bg-[#242f44] rounded cursor-pointer">
+                      <p class="text-sm font-medium">Course schedule updated</p>
+                      <p class="text-xs text-gray-400">Yesterday</p>
+                    </div>
+                  </div>
+                  <div class="p-2 border-t border-[#2a3349]">
+                    <a href="#" class="text-[#14A155] text-sm block text-center"
+                      >View all notifications</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="relative" id="profileDropdown">
+                <button class="flex items-center space-x-2">
+                  <div
+                    class="w-8 h-8 rounded-full bg-[#14A155] flex items-center justify-center text-white font-semibold text-sm"
+                  >
+                    JS
+                  </div>
+                  <span class="hidden md:block text-sm font-medium text-white"
+                    >James</span
+                  >
+                  <div
+                    class="w-4 h-4 flex items-center justify-center text-gray-400"
+                  >
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </button>
+                <div class="dropdown-menu" id="profileMenu">
+                  <div class="p-3 border-b border-[#2a3349]">
+                    <h3 class="font-medium">James Smith</h3>
+                    <p class="text-xs text-gray-400">james.smith@example.com</p>
+                  </div>
+                  <div class="p-2">
+                    <a
+                      href="#"
+                      class="flex items-center p-2 hover:bg-[#242f44] rounded"
+                    >
+                      <div
+                        class="w-5 h-5 flex items-center justify-center mr-2 text-gray-400"
+                      >
+                        <i class="ri-user-line"></i>
+                      </div>
+                      <span class="text-sm">Profile</span>
+                    </a>
+                    <a
+                      href="#"
+                      class="flex items-center p-2 hover:bg-[#242f44] rounded"
+                    >
+                      <div
+                        class="w-5 h-5 flex items-center justify-center mr-2 text-gray-400"
+                      >
+                        <i class="ri-settings-line"></i>
+                      </div>
+                      <span class="text-sm">Settings</span>
+                    </a>
+                    <a
+                      href="#"
+                      class="flex items-center p-2 hover:bg-[#242f44] rounded"
+                    >
+                      <div
+                        class="w-5 h-5 flex items-center justify-center mr-2 text-gray-400"
+                      >
+                        <i class="ri-moon-line"></i>
+                      </div>
+                      <span class="text-sm">Dark Mode</span>
+                      <div class="ml-auto">
+                        <label class="custom-switch">
+                          <input type="checkbox" checked />
+                          <span class="switch-slider"></span>
+                        </label>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="p-2 border-t border-[#2a3349]">
+                    <a
+                      href="#"
+                      class="flex items-center p-2 hover:bg-[#242f44] rounded text-red-400"
+                    >
+                      <div
+                        class="w-5 h-5 flex items-center justify-center mr-2"
+                      >
+                        <i class="ri-logout-box-r-line"></i>
+                      </div>
+                      <span class="text-sm">Logout</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+        <!-- Main Content Area -->
+        <main class="p-6">
+          <!-- Course Header -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between">
+              <div>
+                <h1 class="text-2xl font-bold text-white">My Courses</h1>
+                <p class="text-gray-400 mt-1">
+                  Manage your enrolled courses and track progress
+                </p>
+              </div>
+              <div class="flex space-x-4">
+                <button
+                  class="px-4 py-2 bg-[#242f44] text-white rounded-lg flex items-center !rounded-button whitespace-nowrap"
+                >
+                  <div class="w-4 h-4 flex items-center justify-center mr-2">
+                    <i class="ri-filter-3-line"></i>
+                  </div>
+                  <span>Filter</span>
+                </button>
+                <button
+                  class="px-4 py-2 bg-[#14A155] text-white rounded-lg flex items-center !rounded-button whitespace-nowrap"
+                >
+                  <div class="w-4 h-4 flex items-center justify-center mr-2">
+                    <i class="ri-add-line"></i>
+                  </div>
+                  <span>Browse Courses</span>
+                </button>
+              </div>
+            </div>
+            <!-- Course Categories -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+              <button
+                class="p-4 bg-[#242f44] rounded-lg text-center hover:bg-[#2a3349] transition-colors"
+              >
+                <div
+                  class="w-12 h-12 rounded-full bg-[#14A155] bg-opacity-20 flex items-center justify-center text-[#14A155] mx-auto mb-3"
+                >
+                  <i class="ri-code-line ri-xl"></i>
+                </div>
+                <span class="text-white font-medium">Programming</span>
+                <p class="text-gray-400 text-sm mt-1">12 Courses</p>
+              </button>
+              <button
+                class="p-4 bg-[#242f44] rounded-lg text-center hover:bg-[#2a3349] transition-colors"
+              >
+                <div
+                  class="w-12 h-12 rounded-full bg-[#FF6B2B] bg-opacity-20 flex items-center justify-center text-[#FF6B2B] mx-auto mb-3"
+                >
+                  <i class="ri-database-2-line ri-xl"></i>
+                </div>
+                <span class="text-white font-medium">Database</span>
+                <p class="text-gray-400 text-sm mt-1">8 Courses</p>
+              </button>
+              <button
+                class="p-4 bg-[#242f44] rounded-lg text-center hover:bg-[#2a3349] transition-colors"
+              >
+                <div
+                  class="w-12 h-12 rounded-full bg-[#0066CC] bg-opacity-20 flex items-center justify-center text-[#0066CC] mx-auto mb-3"
+                >
+                  <i class="ri-cloud-line ri-xl"></i>
+                </div>
+                <span class="text-white font-medium">Cloud Computing</span>
+                <p class="text-gray-400 text-sm mt-1">6 Courses</p>
+              </button>
+              <button
+                class="p-4 bg-[#242f44] rounded-lg text-center hover:bg-[#2a3349] transition-colors"
+              >
+                <div
+                  class="w-12 h-12 rounded-full bg-purple-500 bg-opacity-20 flex items-center justify-center text-purple-500 mx-auto mb-3"
+                >
+                  <i class="ri-brain-line ri-xl"></i>
+                </div>
+                <span class="text-white font-medium">AI & ML</span>
+                <p class="text-gray-400 text-sm mt-1">4 Courses</p>
+              </button>
+            </div>
+          </div>
+          <!-- Course Progress Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-medium text-white">Course Completion</h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#14A155] bg-opacity-20 flex items-center justify-center text-[#14A155]"
+                >
+                  <i class="ri-pie-chart-line"></i>
+                </div>
+              </div>
+              <div class="relative pt-4">
+                <div class="flex items-center justify-center">
+                  <div
+                    class="w-32 h-32 rounded-full border-8 border-[#14A155] flex items-center justify-center"
+                  >
+                    <span class="text-2xl font-bold text-white">75%</span>
+                  </div>
+                </div>
+                <p class="text-center text-sm text-gray-400 mt-4">
+                  18 of 24 courses completed
+                </p>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-medium text-white">Learning Time</h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#FF6B2B] bg-opacity-20 flex items-center justify-center text-[#FF6B2B]"
+                >
+                  <i class="ri-time-line"></i>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-400">This Week</span>
+                    <span class="text-sm text-white">12h 30m</span>
+                  </div>
+                  <div class="w-full h-2 bg-[#242f44] rounded-full">
+                    <div
+                      class="h-full bg-[#FF6B2B] rounded-full"
+                      style="width: 75%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-400">Last Week</span>
+                    <span class="text-sm text-white">10h 45m</span>
+                  </div>
+                  <div class="w-full h-2 bg-[#242f44] rounded-full">
+                    <div
+                      class="h-full bg-[#FF6B2B] rounded-full"
+                      style="width: 65%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-medium text-white">Achievements</h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#0066CC] bg-opacity-20 flex items-center justify-center text-[#0066CC]"
+                >
+                  <i class="ri-medal-line"></i>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-[#14A155] bg-opacity-20 flex items-center justify-center text-[#14A155] mx-auto mb-2"
+                  >
+                    <i class="ri-trophy-line ri-lg"></i>
+                  </div>
+                  <span class="text-xs text-gray-400">Perfect Score</span>
+                </div>
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-[#FF6B2B] bg-opacity-20 flex items-center justify-center text-[#FF6B2B] mx-auto mb-2"
+                  >
+                    <i class="ri-fire-line ri-lg"></i>
+                  </div>
+                  <span class="text-xs text-gray-400">30 Day Streak</span>
+                </div>
+                <div class="text-center">
+                  <div
+                    class="w-12 h-12 rounded-full bg-[#0066CC] bg-opacity-20 flex items-center justify-center text-[#0066CC] mx-auto mb-2"
+                  >
+                    <i class="ri-star-line ri-lg"></i>
+                  </div>
+                  <span class="text-xs text-gray-400">Top Student</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Stats Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-400">
+                  Courses Enrolled
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#14A155] bg-opacity-20 flex items-center justify-center text-[#14A155]"
+                >
+                  <i class="ri-book-open-line"></i>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-2xl font-bold text-white">6</p>
+                  <p class="text-xs text-gray-400 mt-1">Current Semester</p>
+                </div>
+                <div class="flex items-center text-[#14A155] text-sm">
+                  <span>+2</span>
+                  <i class="ri-arrow-up-s-line ml-1"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-400">
+                  Attendance Rate
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#FF6B2B] bg-opacity-20 flex items-center justify-center text-[#FF6B2B]"
+                >
+                  <i class="ri-calendar-check-line"></i>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-2xl font-bold text-white">92%</p>
+                  <p class="text-xs text-gray-400 mt-1">This Month</p>
+                </div>
+                <div class="flex items-center text-[#14A155] text-sm">
+                  <span>+5%</span>
+                  <i class="ri-arrow-up-s-line ml-1"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-400">
+                  Completed Lectures
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-[#0066CC] bg-opacity-20 flex items-center justify-center text-[#0066CC]"
+                >
+                  <i class="ri-video-line"></i>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-2xl font-bold text-white">24/30</p>
+                  <p class="text-xs text-gray-400 mt-1">This Week</p>
+                </div>
+                <div class="flex items-center text-[#14A155] text-sm">
+                  <span>80%</span>
+                  <i class="ri-arrow-up-s-line ml-1"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-400">
+                  Upcoming Deadlines
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-lg bg-red-500 bg-opacity-20 flex items-center justify-center text-red-500"
+                >
+                  <i class="ri-alarm-warning-line"></i>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-2xl font-bold text-white">3</p>
+                  <p class="text-xs text-gray-400 mt-1">This Week</p>
+                </div>
+                <div class="flex items-center text-red-500 text-sm">
+                  <span>Urgent</span>
+                  <i class="ri-time-line ml-1"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Progress & Lectures Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Course Progress -->
+            <div
+              class="lg:col-span-2 bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-white">
+                  Course Progress
+                </h2>
+                <div class="flex space-x-2">
+                  <button
+                    class="px-3 py-1 text-sm bg-[#242f44] text-gray-300 rounded-full !rounded-button whitespace-nowrap"
+                  >
+                    This Week
+                  </button>
+                  <button
+                    class="px-3 py-1 text-sm bg-transparent text-gray-400 rounded-full !rounded-button whitespace-nowrap"
+                  >
+                    This Month
+                  </button>
+                </div>
+              </div>
+              <div id="courseProgressChart" class="h-72"></div>
+            </div>
+            <!-- Upcoming Lectures -->
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-white">
+                  Upcoming Lectures
+                </h2>
+                <button class="text-[#14A155]">
+                  <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-more-2-fill"></i>
+                  </div>
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div class="flex items-start p-3 bg-[#242f44] rounded-lg">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-[#14A155] bg-opacity-20 flex items-center justify-center text-[#14A155] mr-3 flex-shrink-0"
+                  >
+                    <i class="ri-vidicon-line"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-medium text-white">
+                      Advanced Database Systems
+                    </h3>
+                    <p class="text-sm text-gray-400 mt-1">
+                      Today, 10:30 AM - 12:00 PM
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start p-3 bg-[#242f44] rounded-lg">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-[#0066CC] bg-opacity-20 flex items-center justify-center text-[#0066CC] mr-3 flex-shrink-0"
+                  >
+                    <i class="ri-vidicon-line"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-medium text-white">Web Development</h3>
+                    <p class="text-sm text-gray-400 mt-1">
+                      Today, 2:00 PM - 3:30 PM
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start p-3 bg-[#242f44] rounded-lg">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-[#FF6B2B] bg-opacity-20 flex items-center justify-center text-[#FF6B2B] mr-3 flex-shrink-0"
+                  >
+                    <i class="ri-vidicon-line"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-medium text-white">
+                      Data Structures & Algorithms
+                    </h3>
+                    <p class="text-sm text-gray-400 mt-1">
+                      Tomorrow, 9:00 AM - 10:30 AM
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start p-3 bg-[#242f44] rounded-lg">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-purple-500 bg-opacity-20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0"
+                  >
+                    <i class="ri-vidicon-line"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-medium text-white">Machine Learning</h3>
+                    <p class="text-sm text-gray-400 mt-1">
+                      Tomorrow, 1:00 PM - 2:30 PM
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Recorded Lectures Section -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-semibold text-white">
+                Recorded Lectures
+              </h2>
+              <button
+                class="px-4 py-2 bg-[#14A155] text-white rounded-lg flex items-center !rounded-button whitespace-nowrap"
+              >
+                <div class="w-4 h-4 flex items-center justify-center mr-2">
+                  <i class="ri-filter-3-line"></i>
+                </div>
+                <span>Filter</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div
+                class="bg-[#1a2236] rounded-lg overflow-hidden border border-[#2a3349] transition-all duration-300 course-card"
+              >
+                <div class="relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=A%20professional%20lecture%20on%20web%20development%20with%20code%20on%20screen%20in%20a%20modern%20classroom%20setting%2C%20with%20clean%20and%20minimalist%20design%2C%20soft%20lighting%2C%20focused%20on%20educational%20content&width=400&height=200&seq=1&orientation=landscape"
+                    alt="Web Development"
+                    class="w-full h-48 object-cover object-top"
+                  />
+                  <div
+                    class="absolute top-3 right-3 bg-[#14A155] text-white px-2 py-1 rounded text-xs"
+                  >
+                    Completed
+                  </div>
+                  <button
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity"
+                  >
+                    <div
+                      class="w-16 h-16 rounded-full bg-[#14A155] flex items-center justify-center"
+                    >
+                      <div
+                        class="w-8 h-8 flex items-center justify-center text-white"
+                      >
+                        <i class="ri-play-fill"></i>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white">
+                    Introduction to React Hooks
+                  </h3>
+                  <p class="text-sm text-gray-400 mt-1">Web Development</p>
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>45 minutes</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-calendar-line"></i>
+                      </div>
+                      <span>May 10, 2025</span>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-400">Progress</span>
+                      <span class="text-xs text-[#14A155]">100%</span>
+                    </div>
+                    <div
+                      class="w-full h-2 bg-[#242f44] rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-[#14A155] rounded-full"
+                        style="width: 100%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-[#1a2236] rounded-lg overflow-hidden border border-[#2a3349] transition-all duration-300 course-card"
+              >
+                <div class="relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=A%20professional%20lecture%20on%20database%20systems%20with%20SQL%20code%20examples%20on%20screen%20in%20a%20modern%20classroom%20setting%2C%20with%20clean%20and%20minimalist%20design%2C%20soft%20lighting%2C%20focused%20on%20educational%20content&width=400&height=200&seq=2&orientation=landscape"
+                    alt="Database Systems"
+                    class="w-full h-48 object-cover object-top"
+                  />
+                  <div
+                    class="absolute top-3 right-3 bg-[#FF6B2B] text-white px-2 py-1 rounded text-xs"
+                  >
+                    In Progress
+                  </div>
+                  <button
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity"
+                  >
+                    <div
+                      class="w-16 h-16 rounded-full bg-[#14A155] flex items-center justify-center"
+                    >
+                      <div
+                        class="w-8 h-8 flex items-center justify-center text-white"
+                      >
+                        <i class="ri-play-fill"></i>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white">
+                    SQL Database Optimization
+                  </h3>
+                  <p class="text-sm text-gray-400 mt-1">
+                    Advanced Database Systems
+                  </p>
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>60 minutes</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-calendar-line"></i>
+                      </div>
+                      <span>May 12, 2025</span>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-400">Progress</span>
+                      <span class="text-xs text-[#FF6B2B]">65%</span>
+                    </div>
+                    <div
+                      class="w-full h-2 bg-[#242f44] rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-[#FF6B2B] rounded-full"
+                        style="width: 65%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-[#1a2236] rounded-lg overflow-hidden border border-[#2a3349] transition-all duration-300 course-card"
+              >
+                <div class="relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=A%20professional%20lecture%20on%20data%20structures%20and%20algorithms%20with%20code%20examples%20on%20screen%20in%20a%20modern%20classroom%20setting%2C%20with%20clean%20and%20minimalist%20design%2C%20soft%20lighting%2C%20focused%20on%20educational%20content&width=400&height=200&seq=3&orientation=landscape"
+                    alt="Data Structures"
+                    class="w-full h-48 object-cover object-top"
+                  />
+                  <div
+                    class="absolute top-3 right-3 bg-gray-500 text-white px-2 py-1 rounded text-xs"
+                  >
+                    Not Started
+                  </div>
+                  <button
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity"
+                  >
+                    <div
+                      class="w-16 h-16 rounded-full bg-[#14A155] flex items-center justify-center"
+                    >
+                      <div
+                        class="w-8 h-8 flex items-center justify-center text-white"
+                      >
+                        <i class="ri-play-fill"></i>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white">
+                    Binary Trees & Graph Algorithms
+                  </h3>
+                  <p class="text-sm text-gray-400 mt-1">
+                    Data Structures & Algorithms
+                  </p>
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>75 minutes</span>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-calendar-line"></i>
+                      </div>
+                      <span>May 14, 2025</span>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-400">Progress</span>
+                      <span class="text-xs text-gray-400">0%</span>
+                    </div>
+                    <div
+                      class="w-full h-2 bg-[#242f44] rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-gray-500 rounded-full"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Attendance Section -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-semibold text-white">
+                Attendance Overview
+              </h2>
+              <div class="flex space-x-2">
+                <button
+                  class="px-3 py-1 text-sm bg-[#242f44] text-gray-300 rounded-full !rounded-button whitespace-nowrap"
+                >
+                  May 2025
+                </button>
+                <button class="text-gray-400">
+                  <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="ri-arrow-left-s-line"></i>
+                  </div>
+                </button>
+                <button class="text-gray-400">
+                  <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="ri-arrow-right-s-line"></i>
+                  </div>
+                </button>
+              </div>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="grid grid-cols-7 gap-2 mb-6">
+                <div class="text-center text-xs text-gray-400">Mon</div>
+                <div class="text-center text-xs text-gray-400">Tue</div>
+                <div class="text-center text-xs text-gray-400">Wed</div>
+                <div class="text-center text-xs text-gray-400">Thu</div>
+                <div class="text-center text-xs text-gray-400">Fri</div>
+                <div class="text-center text-xs text-gray-400">Sat</div>
+                <div class="text-center text-xs text-gray-400">Sun</div>
+              </div>
+              <div class="grid grid-cols-7 gap-2">
+                <div class="attendance-day attendance-pending">29</div>
+                <div class="attendance-day attendance-pending">30</div>
+                <div class="attendance-day attendance-present">1</div>
+                <div class="attendance-day attendance-present">2</div>
+                <div class="attendance-day attendance-present">3</div>
+                <div class="attendance-day attendance-holiday">4</div>
+                <div class="attendance-day attendance-holiday">5</div>
+                <div class="attendance-day attendance-present">6</div>
+                <div class="attendance-day attendance-present">7</div>
+                <div class="attendance-day attendance-present">8</div>
+                <div class="attendance-day attendance-absent">9</div>
+                <div class="attendance-day attendance-present">10</div>
+                <div class="attendance-day attendance-holiday">11</div>
+                <div class="attendance-day attendance-holiday">12</div>
+                <div class="attendance-day attendance-present">13</div>
+                <div class="attendance-day attendance-present">14</div>
+                <div class="attendance-day attendance-present">15</div>
+                <div class="attendance-day attendance-pending">16</div>
+                <div class="attendance-day attendance-pending">17</div>
+                <div class="attendance-day attendance-pending">18</div>
+                <div class="attendance-day attendance-pending">19</div>
+                <div class="attendance-day attendance-pending">20</div>
+                <div class="attendance-day attendance-pending">21</div>
+                <div class="attendance-day attendance-pending">22</div>
+                <div class="attendance-day attendance-pending">23</div>
+                <div class="attendance-day attendance-pending">24</div>
+                <div class="attendance-day attendance-pending">25</div>
+                <div class="attendance-day attendance-pending">26</div>
+                <div class="attendance-day attendance-pending">27</div>
+                <div class="attendance-day attendance-pending">28</div>
+                <div class="attendance-day attendance-pending">29</div>
+                <div class="attendance-day attendance-pending">30</div>
+                <div class="attendance-day attendance-pending">31</div>
+                <div class="attendance-day attendance-pending">1</div>
+                <div class="attendance-day attendance-pending">2</div>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="flex items-center">
+                  <div class="w-4 h-4 rounded-full bg-[#14A155] mr-2"></div>
+                  <span class="text-sm text-gray-400">Present (10)</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-4 h-4 rounded-full bg-red-500 mr-2"></div>
+                  <span class="text-sm text-gray-400">Absent (1)</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-4 h-4 rounded-full bg-[#3b82f6] mr-2"></div>
+                  <span class="text-sm text-gray-400">Holiday (4)</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-4 h-4 rounded-full bg-gray-500 mr-2"></div>
+                  <span class="text-sm text-gray-400">Upcoming (16)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fee Status Section -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-semibold text-white">Fee Status</h2>
+              <button
+                class="px-4 py-2 bg-[#14A155] text-white rounded-lg !rounded-button whitespace-nowrap"
+              >
+                Pay Now
+              </button>
+            </div>
+            <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-4 bg-[#242f44] rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-400">Total Fee</h3>
+                  <p class="text-xl font-bold text-white mt-2">$8,500.00</p>
+                  <div class="flex items-center text-xs text-gray-400 mt-2">
+                    <span>Academic Year 2025</span>
+                  </div>
+                </div>
+                <div class="p-4 bg-[#242f44] rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-400">Paid Amount</h3>
+                  <p class="text-xl font-bold text-[#14A155] mt-2">$5,500.00</p>
+                  <div class="flex items-center text-xs text-gray-400 mt-2">
+                    <span>Last payment: May 1, 2025</span>
+                  </div>
+                </div>
+                <div class="p-4 bg-[#242f44] rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-400">Due Amount</h3>
+                  <p class="text-xl font-bold text-[#FF6B2B] mt-2">$3,000.00</p>
+                  <div class="flex items-center text-xs text-gray-400 mt-2">
+                    <span>Due date: June 15, 2025</span>
+                  </div>
+                </div>
+                <div class="p-4 bg-[#242f44] rounded-lg">
+                  <h3 class="text-sm font-medium text-gray-400">
+                    Payment Status
+                  </h3>
+                  <p class="text-xl font-bold text-white mt-2">
+                    Installment 2/3
+                  </p>
+                  <div class="flex items-center text-xs text-[#14A155] mt-2">
+                    <span>On schedule</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6">
+                <h3 class="text-sm font-medium text-white mb-4">
+                  Payment History
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr class="border-b border-[#2a3349]">
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Receipt No.
+                        </th>
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Date
+                        </th>
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Amount
+                        </th>
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Payment Method
+                        </th>
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Status
+                        </th>
+                        <th
+                          class="px-4 py-3 text-left text-xs font-medium text-gray-400"
+                        >
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-[#2a3349]">
+                        <td class="px-4 py-3 text-sm text-white">
+                          INV-2025-001
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                          Jan 15, 2025
+                        </td>
+                        <td class="px-4 py-3 text-sm text-white">$3,000.00</td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                          Credit Card
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="px-2 py-1 text-xs bg-[#14A155] bg-opacity-20 text-[#14A155] rounded-full"
+                            >Paid</span
+                          >
+                        </td>
+                        <td class="px-4 py-3">
+                          <button class="text-[#0066CC]">
+                            <div
+                              class="w-6 h-6 flex items-center justify-center"
+                            >
+                              <i class="ri-download-line"></i>
+                            </div>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="border-b border-[#2a3349]">
+                        <td class="px-4 py-3 text-sm text-white">
+                          INV-2025-002
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                          May 1, 2025
+                        </td>
+                        <td class="px-4 py-3 text-sm text-white">$2,500.00</td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                          Bank Transfer
+                        </td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="px-2 py-1 text-xs bg-[#14A155] bg-opacity-20 text-[#14A155] rounded-full"
+                            >Paid</span
+                          >
+                        </td>
+                        <td class="px-4 py-3">
+                          <button class="text-[#0066CC]">
+                            <div
+                              class="w-6 h-6 flex items-center justify-center"
+                            >
+                              <i class="ri-download-line"></i>
+                            </div>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-4 py-3 text-sm text-white">
+                          INV-2025-003
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-400">
+                          Jun 15, 2025
+                        </td>
+                        <td class="px-4 py-3 text-sm text-white">$3,000.00</td>
+                        <td class="px-4 py-3 text-sm text-gray-400">-</td>
+                        <td class="px-4 py-3">
+                          <span
+                            class="px-2 py-1 text-xs bg-[#FF6B2B] bg-opacity-20 text-[#FF6B2B] rounded-full"
+                            >Pending</span
+                          >
+                        </td>
+                        <td class="px-4 py-3">
+                          <button class="text-[#FF6B2B]">
+                            <div
+                              class="w-6 h-6 flex items-center justify-center"
+                            >
+                              <i class="ri-wallet-3-line"></i>
+                            </div>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Announcements Section -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-semibold text-white">
+                Recent Announcements
+              </h2>
+              <button class="text-[#14A155]">View All</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="px-2 py-1 text-xs bg-[#0066CC] bg-opacity-20 text-[#0066CC] rounded-full"
+                    >Campus</span
+                  >
+                  <span class="text-xs text-gray-400">May 14, 2025</span>
+                </div>
+                <h3 class="font-semibold text-white mb-2">
+                  Campus Maintenance Notice
+                </h3>
+                <p class="text-sm text-gray-400 mb-4">
+                  The library will be closed for renovations from May 20-25.
+                  Online resources will remain accessible.
+                </p>
+                <button class="text-[#14A155] text-sm">Read More</button>
+              </div>
+              <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="px-2 py-1 text-xs bg-[#FF6B2B] bg-opacity-20 text-[#FF6B2B] rounded-full"
+                    >Academic</span
+                  >
+                  <span class="text-xs text-gray-400">May 12, 2025</span>
+                </div>
+                <h3 class="font-semibold text-white mb-2">
+                  Final Exam Schedule Released
+                </h3>
+                <p class="text-sm text-gray-400 mb-4">
+                  The final examination schedule for Spring 2025 has been
+                  published. Please check your student portal for details.
+                </p>
+                <button class="text-[#14A155] text-sm">Read More</button>
+              </div>
+              <div class="bg-[#1a2236] rounded-lg p-5 border border-[#2a3349]">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="px-2 py-1 text-xs bg-[#14A155] bg-opacity-20 text-[#14A155] rounded-full"
+                    >Event</span
+                  >
+                  <span class="text-xs text-gray-400">May 10, 2025</span>
+                </div>
+                <h3 class="font-semibold text-white mb-2">
+                  Tech Innovation Summit 2025
+                </h3>
+                <p class="text-sm text-gray-400 mb-4">
+                  Join us for the annual Tech Innovation Summit on June 5-6.
+                  Register now to secure your spot and meet industry leaders.
+                </p>
+                <button class="text-[#14A155] text-sm">Read More</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <!-- AI Chatbot -->
+    <div class="chatbot-container">
+      <div class="chatbot-button" id="chatbotButton">
+        <div class="w-6 h-6 flex items-center justify-center text-white">
+          <i class="ri-robot-line"></i>
+        </div>
+      </div>
+      <div class="chatbot-window" id="chatbotWindow">
+        <div
+          class="flex items-center justify-between p-4 border-b border-[#2a3349]"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-8 h-8 rounded-full bg-[#14A155] flex items-center justify-center text-white"
+            >
+              <i class="ri-robot-line"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="font-medium text-white">AI Assistant</h3>
+              <p class="text-xs text-gray-400">Online</p>
+            </div>
+          </div>
+          <button id="closeChatbot" class="text-gray-400 hover:text-white">
+            <div class="w-6 h-6 flex items-center justify-center">
+              <i class="ri-close-line"></i>
+            </div>
+          </button>
+        </div>
+        <div class="p-4 h-[320px] overflow-y-auto" id="chatMessages">
+          <div class="flex mb-4">
+            <div
+              class="w-8 h-8 rounded-full bg-[#14A155] flex items-center justify-center text-white flex-shrink-0"
+            >
+              <i class="ri-robot-line"></i>
+            </div>
+            <div
+              class="ml-3 bg-[#242f44] p-3 rounded-lg rounded-tl-none max-w-[80%]"
+            >
+              <p class="text-sm text-white">
+                Hello James! How can I help you today?
+              </p>
+              <span class="text-xs text-gray-400 block mt-1">10:30 AM</span>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 border-t border-[#2a3349]">
+          <div class="flex items-center">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              class="flex-1 bg-[#242f44] border-none text-gray-300 px-4 py-2 rounded-l focus:outline-none focus:ring-2 focus:ring-[#14A155]"
+            />
+            <button
+              class="bg-[#14A155] text-white px-4 py-2 rounded-r !rounded-button whitespace-nowrap"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-send-plane-fill"></i>
+              </div>
+            </button>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex space-x-2">
+              <button class="text-gray-400 hover:text-white">
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-attachment-2"></i>
+                </div>
+              </button>
+              <button class="text-gray-400 hover:text-white">
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-emotion-line"></i>
+                </div>
+              </button>
+            </div>
+            <div class="text-xs text-gray-400">Powered by AI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize course progress chart
+        const courseProgressChart = echarts.init(
+          document.getElementById("courseProgressChart"),
+        );
+        const option = {
+          animation: false,
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            textStyle: {
+              color: "#1f2937",
+            },
+          },
+          legend: {
+            data: ["Web Development", "Database Systems", "Data Structures"],
+            textStyle: {
+              color: "#e2e8f0",
+            },
+            top: 0,
+            right: 0,
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            top: "40px",
+            containLabel: true,
+          },
+          xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            axisLine: {
+              lineStyle: {
+                color: "#374151",
+              },
+            },
+            axisLabel: {
+              color: "#9ca3af",
+            },
+          },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              lineStyle: {
+                color: "#374151",
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#2a3349",
+              },
+            },
+            axisLabel: {
+              color: "#9ca3af",
+            },
+          },
+          series: [
+            {
+              name: "Web Development",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(87, 181, 231, 1)",
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "rgba(87, 181, 231, 0.3)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(87, 181, 231, 0.1)",
+                  },
+                ]),
+              },
+              data: [30, 40, 45, 50, 55, 60, 70],
+              showSymbol: false,
+            },
+            {
+              name: "Database Systems",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(141, 211, 199, 1)",
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "rgba(141, 211, 199, 0.3)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(141, 211, 199, 0.1)",
+                  },
+                ]),
+              },
+              data: [20, 25, 30, 35, 40, 45, 50],
+              showSymbol: false,
+            },
+            {
+              name: "Data Structures",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(251, 191, 114, 1)",
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "rgba(251, 191, 114, 0.3)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(251, 191, 114, 0.1)",
+                  },
+                ]),
+              },
+              data: [10, 15, 20, 25, 30, 35, 40],
+              showSymbol: false,
+            },
+          ],
+        };
+        courseProgressChart.setOption(option);
+        // Handle window resize
+        window.addEventListener("resize", function () {
+          courseProgressChart.resize();
+        });
+        // Toggle notification dropdown
+        const notificationDropdown = document.getElementById("notificationDropdown");
+        const notificationMenu = document.getElementById("notificationMenu");
+        notificationDropdown.addEventListener("click", function (e) {
+          e.stopPropagation();
+          notificationMenu.classList.toggle("active");
+          if (profileMenu.classList.contains("active")) {
+            profileMenu.classList.remove("active");
+          }
+        });
+        // Toggle profile dropdown
+        const profileDropdown = document.getElementById("profileDropdown");
+        const profileMenu = document.getElementById("profileMenu");
+        profileDropdown.addEventListener("click", function (e) {
+          e.stopPropagation();
+          profileMenu.classList.toggle("active");
+          if (notificationMenu.classList.contains("active")) {
+            notificationMenu.classList.remove("active");
+          }
+        });
+        // Close dropdowns when clicking outside
+        document.addEventListener("click", function () {
+          notificationMenu.classList.remove("active");
+          profileMenu.classList.remove("active");
+        });
+        // Chatbot functionality
+        const chatbotButton = document.getElementById("chatbotButton");
+        const chatbotWindow = document.getElementById("chatbotWindow");
+        const closeChatbot = document.getElementById("closeChatbot");
+        const chatMessages = document.getElementById("chatMessages");
+        chatbotButton.addEventListener("click", function () {
+          chatbotWindow.classList.toggle("active");
+        });
+        closeChatbot.addEventListener("click", function () {
+          chatbotWindow.classList.remove("active");
+        });
+        // Custom checkbox functionality
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("click", function () {
+            this.classList.toggle("checked");
+          });
+        });
+        // Custom radio functionality
+        const radios = document.querySelectorAll(".custom-radio");
+        radios.forEach((radio) => {
+          radio.addEventListener("click", function () {
+            const name = this.getAttribute("data-name");
+            document
+              .querySelectorAll(`.custom-radio[data-name="${name}"]`)
+              .forEach((r) => {
+                r.classList.remove("checked");
+              });
+            this.classList.add("checked");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

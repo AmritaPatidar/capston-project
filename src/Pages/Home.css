@@ -1,0 +1,109 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Body Theme */
+  body {
+    background-color: #ffffff;
+    color: #1e3a8a; /* Tailwind blue-900 */
+  }
+  
+  /* Navbar */
+  nav {
+    background-color: #1e3a8a; /* Deep Blue */
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  nav h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #fb923c; /* Tailwind orange-400 */
+  }
+  
+  nav ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+  
+  nav ul li {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  nav ul li:hover {
+    color: #fdba74; /* Tailwind orange-300 */
+  }
+  
+  /* Hero Section */
+  .hero {
+    background-color: #fffbf0; /* Light orange tint */
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+  
+  .hero h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #334155;
+  }
+  
+  .hero img {
+    margin-top: 2rem;
+    max-width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Video Section */
+  .video-section {
+    padding: 4rem 2rem;
+    background-color: #ffffff;
+    text-align: center;
+  }
+  
+  .video-section h3 {
+    font-size: 2rem;
+    color: #f97316; /* Tailwind orange-500 */
+    margin-bottom: 1.5rem;
+  }
+  
+  video {
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Features Section */
+  .features {
+    background-color: #eff6ff; /* Tailwind blue-50 */
+    padding: 4rem 2rem;
+  }
+  
+  .features h3 {
+    font-size: 2rem;
+    color: #1e40af; /* Tailwind blue-800 */
+    margin-bottom: 1rem;
+  }
+  
+  .features ul {
+    font-size: 1.1rem;
+    color: #1e3a8a;
+    padding-left: 2rem;
+    list-style: disc;
+    line-height: 1.8;
+  }
+  
